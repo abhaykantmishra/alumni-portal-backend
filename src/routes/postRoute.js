@@ -8,4 +8,4 @@ postRouter.route('/postjob').post(upload.single('thumbnail'),postJob);
 postRouter.route("/getjobs").get(getJobs);
 postRouter.route('/getuserposts').post(getUserPosts);
 
-export default postRouter;
+export  {postRouter};

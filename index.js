@@ -2,6 +2,8 @@ import "dotenv/config"
 import express from "express"
 import cors from "cors"
 import {connectDB} from "./src/db/connection.js"
+import {userRouter} from "./src/routes/userRoute.js";
+import { postRouter } from "./src/routes/postRoute.js";
 
 const app = express();
 // DB_NAME for a collections in Db =>
@@ -30,7 +32,8 @@ app.use(cors({
     credentials: true
 }))
 
-// app.use('/api/user' , user);
+app.use('/user' , userRouter);
+app.use('/post' , postRouter);
 
 app.get('/', (req,res) => {
     return res.json({

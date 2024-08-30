@@ -23,4 +23,4 @@ userRouter.route('/acceptinvitation').post(acceptInvitation); // userIdToAdd, to
 
 userRouter.route('/deleteconnection').post(deleteconnection); // userIdToRemove , fromUserId
 
-export default userRouter;
+export {userRouter};
