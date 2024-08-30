@@ -16,11 +16,11 @@ const uploadImageOnCloudinary = async (localFilePath) => {
          console.log(error);
          return null;
      });
-    //  fs.unlinkSync(localFilePath) 
+     fs.unlinkSync(localFilePath) 
      return uploadResult;  
     } catch (error) {
         console.log(error)
-        // fs.unlinkSync(localFilePath) 
+        fs.unlinkSync(localFilePath) 
         return null;
     }
 } 
