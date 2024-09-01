@@ -43,7 +43,7 @@ async function registerUser(req,res){
 async function loginUser(req,res){
     try {
         const {email , password} = req.body;
-        if(!(email?.trim()) || !(password?.trim()) ){
+        if(!(email) || !(password) ){
             return res.status(400).json({
                 msg:"email and password fields are required!"
             })
