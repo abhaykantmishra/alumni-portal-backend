@@ -8,7 +8,7 @@ import { postRouter } from "./src/routes/postRoute.js";
 const app = express();
 // DB_NAME for a collections in Db =>
 const DB_NAME = "alumini";
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 
 // connecting mongo-db =>
 const mongoDB_uri = `${process.env.MONGODB_URI}/${DB_NAME}`
@@ -24,7 +24,7 @@ connectDB(mongoDB_uri)
 });
 
 
-
+app.use(express.json({}))
 app.use(express.urlencoded({extended:true}))
 
 app.use(cors({
