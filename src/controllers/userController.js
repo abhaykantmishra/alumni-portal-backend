@@ -3,7 +3,7 @@ import User from "../models/userModel.js";
 async function registerUser(req,res){
     try {
         const {name, email , password, collegeName } = req.body;
-        if(!(name.trim()) || !(collegeName.trim()) || !(email.trim()) || !(password.trim())  ){
+        if(!(name?.trim()) || !(collegeName?.trim()) || !(email?.trim()) || !(password?.trim())  ){
             return res.status(400).json({msg:"all fields are required!"})
         }
         
@@ -16,10 +16,10 @@ async function registerUser(req,res){
         }
 
         const user = await User.create({
-            name:name.trim(),
-            email:email.trim(),
-            password:password.trim(),
-            collegeName:collegeName.trim(),
+            name:name?.trim(),
+            email:email?.trim(),
+            password:password?.trim(),
+            collegeName:collegeName?.trim(),
         })
         if(!user){
             return res.status(500).json({
@@ -43,7 +43,7 @@ async function registerUser(req,res){
 async function loginUser(req,res){
     try {
         const {email , password} = req.body;
-        if(!(email.trim()) || !(password.trim()) ){
+        if(!(email?.trim()) || !(password?.trim()) ){
             return res.status(400).json({
                 msg:"email and password fields are required!"
             })
@@ -57,7 +57,7 @@ async function loginUser(req,res){
             })
         }
 
-        if(password.trim() !== user.password ){
+        if(password?.trim() !== user.password ){
             return res.status(401).json({
                 msg:"wrong password!"
             })
