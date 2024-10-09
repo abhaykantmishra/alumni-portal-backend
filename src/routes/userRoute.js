@@ -2,7 +2,7 @@ import { Router } from "express";
 import { registerUser,loginUser,getUserById,
     updateUserProfile,getInvitations,getConnectedUsers,
     createInvitation,cancleInvitation,acceptInvitation,
-    deleteconnection,getCollegeUsers
+    deleteconnection,getCollegeUsers, connectTwoUsers
  } from "../controllers/userController.js";
 
 const userRouter = Router();
@@ -24,5 +24,7 @@ userRouter.route('/acceptinvitation').post(acceptInvitation); // userIdToAdd, to
 userRouter.route('/deleteconnection').post(deleteconnection); // userIdToRemove , fromUserId
 
 userRouter.route('/getcollegeusers').post(getCollegeUsers); // collegeName
+
+userRouter.route("/connectusers").post(connectTwoUsers);
 
 export {userRouter};

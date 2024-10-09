@@ -261,7 +261,7 @@ async function createInvitation(req,res){
             userId:fromUser._id,
         }
         const updatedUser = await User.findByIdAndUpdate(toUserId,{
-            $push:{ invitations : objToAdd}
+            $push:{ invitations : fromUser._id}
         })
 
         if(!updatedUser){
@@ -284,33 +284,30 @@ async function createInvitation(req,res){
 async function cancleInvitation(req,res){
 
     try {
-        const {userIdToRemove,fromUserId} = req.body;
+        const {userId1,userId2} = req.body;
 
-        if(!userIdToRemove || !(fromUserId?.trim())){
+        if(!userId1 || !(userId1?.trim())){
             return res.status(400).json({
                 msg:"please provide a user id"
             })
         }
 
-        if(!userIdToRemove || !(fromUserId?.trim())){
+        if(!userId2 || !(userId2?.trim())){
             return res.status(400).json({
                 msg:"please provide a user id"
             })
         }
 
-        const userToRemove = await User.findById(userIdToRemove);
-        const fromUser = await  User.findById(fromUserId);
+        const userToRemove = await User.findById(userId2);
+        const fromUser = await  User.findById(userId1);
         if(!userToRemove || !fromUser){
             return res.status(404).json({
                 msg:"Provide valid user ids"
             })
         }
-        const objToRemove = {
-            name:userToRemove.name,
-            userId:userToRemove._id,
-        }
-        const updatedUser = await User.findByIdAndUpdate(fromUserId,{
-            $pull:{ invitations : objToRemove}
+       
+        const updatedUser = await User.findByIdAndUpdate(fromUser._id,{
+            $pull:{ invitations : userToRemove._id}
         })
 
         if(!updatedUser){
@@ -332,42 +329,40 @@ async function cancleInvitation(req,res){
 
 async function acceptInvitation(req,res){
     try {
-        const {userIdToAdd,toUserId} = req.body;
+        const {userId1,userId2} = req.body;
 
-        if(!userIdToAdd || !(userIdToAdd?.trim())){
+        if(!userId1 || !(userId2?.trim())){
             return res.status(400).json({
                 msg:"please provide a user id"
             })
         }
 
-        if(!toUserId || !(toUserId?.trim())){
+        if(!userId2 || !(userId2?.trim())){
             return res.status(400).json({
                 msg:"please provide a user id"
             })
         }
 
-        const toUser = await User.findById(toUserId);
-        const userToAdd = await  User.findById(userIdToAdd);
-        if(!toUser || !userToAdd){
+        const user1 = await User.findById(userId1);
+        const user2 = await  User.findById(userId2);
+        if(!user1 || !user2){
             return res.status(404).json({
                 msg:"Provide valid user ids"
             })
         }
 
-        const objToAdd = {
-            name:userToAdd.name,
-            userId:userToAdd._id,
-        }
+        // const removedinvitation = await User.findByIdAndUpdate(user1._id,{
+        //     $pull:{ invitations : user2._id}
+        // })
 
-        const removedinvitation = await User.findByIdAndUpdate(toUserId,{
-            $pull:{ invitations : objToAdd}
+        const updatedUser1 = await User.findByIdAndUpdate(user1._id,{
+            $push:{ connectedUsers : user2._id}
+        })
+        const updatedUser2 = await User.findByIdAndUpdate(user2._id,{
+            $push:{ connectedUsers : user1._id}
         })
 
-        const updatedUser = await User.findByIdAndUpdate(toUserId,{
-            $push:{ connectedUsers : objToAdd}
-        })
-
-        if(!updatedUser || !removedinvitation){
+        if(!updatedUser1 || !updatedUser2 ){
             return res.status(500).json({
                 msg:"something went wrong while adding connection!!"
             })
@@ -407,12 +402,9 @@ async function deleteconnection(req,res) {
                 msg:"Provide valid user ids"
             })
         }
-        const obj = {
-            name:userToRemove.name,
-            userId:userToRemove._id,
-        }
+        
         const updatedUser = await User.findByIdAndUpdate(fromUserId,{
-            $pull:{ connectedUsers : obj}
+            $pull:{ connectedUsers : userToRemove._id}
         })
 
         if(!updatedUser){
@@ -485,6 +477,54 @@ async function getCollegeUsers(req,res){
         console.log(error);
         return res.status(500).json({
             msg:"something went wrong while getting college users"
+        })
+    }
+}
+
+export async function connectTwoUsers(req, res){
+    try {
+        const {userId1 , userId2} = req.body;
+        if(!userId1 || !userId2){
+            return res.ststus(400).json({
+                msg:"Please provide user ids"
+            })
+        }
+
+        const user1 = await User.findById(userId1);
+        const user2 = await User.findById(userId2);
+        if(!user1 || !user2){
+            return res.send("no user")
+        }
+
+        try {
+            const updateUser1 = await User.findByIdAndUpdate(user1._id , {
+                $push:{connectedUsers : `${user2._id}`}
+            })
+        } catch (error) {
+            console.log(error)
+            return res.status(500).json({
+                error:error
+            })
+        }
+        try {
+            const updateUser2 = await User.findByIdAndUpdate(user2._id , {
+                $push:{connectedUsers : `${user1._id}`}
+            })
+        } catch (error) {
+            console.log(error)
+            return res.status(500).json({
+                error:error
+            })
+        }
+
+        return res.status(200).json({
+            msg:"Users connected Successfully"
+        })
+
+    } catch (error) {
+        return res.status(500).json({
+            msg:"Something went wrong while connecting users",
+            error:error
         })
     }
 }
