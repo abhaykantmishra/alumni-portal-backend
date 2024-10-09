@@ -144,7 +144,7 @@ async function getUsersByBatchName(req,res){
             })
         }
 
-        const batchUsers = User.find({batchName:batchName});
+        const batchUsers = await User.find({batchName:batchName});
         if(!batchUsers){
             return res.status(500).json({
                 msg:"something went wrong while fetching batchUsers!"
@@ -459,6 +459,36 @@ async function getUserById(req,res){
     }
 }
 
+async function getCollegeUsers(req,res){
+    try {
+        console.log(req.body);
+        const {collegeName} = req.body;
+        if(!collegeName || !(collegeName?.trim())){
+            return res.status(400).json({
+                msg:"please provide a College Name"
+            })
+        }
+
+        const allUsersFromCollege = await User.find({collegeName:collegeName});
+        if(!allUsersFromCollege){
+            return res.status(500).json({
+                msg:"something went wrong while fetching college users!"
+            })
+        }
+
+        return res.status(200).json({
+            msg:"get college users successfully",
+            users:allUsersFromCollege,
+        })
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            msg:"something went wrong while getting college users"
+        })
+    }
+}
+
 export {
     registerUser,
     loginUser,
@@ -471,4 +501,5 @@ export {
     acceptInvitation,
     getInvitations,
     deleteconnection,
+    getCollegeUsers,
 }
